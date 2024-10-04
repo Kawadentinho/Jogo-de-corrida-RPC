@@ -14,7 +14,17 @@ public class CarNetwork : MonoBehaviourPun, IPunObservable
     // Update is called once per frame
     void Update()
     {
-
+        if (photonView.IsMine)
+        {
+            // Se for o carro do jogador local, a posição e rotação são controladas normalmente
+            return;
+        }
+        else
+        {
+            // Se não for o carro do jogador local, interpola a posição e rotação com base nos dados recebidos da rede
+            transform.position = Vector3.Lerp(transform.position, networkPosition, Time.deltaTime * 10);
+            transform.rotation = Quaternion.Lerp(transform.rotation, networkRotation, Time.deltaTime * 10);
+        }
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

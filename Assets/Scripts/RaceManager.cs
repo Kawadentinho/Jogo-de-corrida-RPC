@@ -21,14 +21,16 @@ public class RaceManager : MonoBehaviourPunCallbacks
         // Inicializa a UI
         lapText.text = "Lap: 0/" + totalLaps;
         finishText.text = ""; // Limpa o texto de fim da corrida no início
+        
     }
 
     // Método chamado quando o jogador entra no trigger da linha de chegada
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Verifica se o jogador cruzou a linha de chegada
-        if (collision.CompareTag("Player") && !raceFinished) // Verifica se o jogador não terminou a corrida
+        // Verifica se o objeto que colidiu tem a tag "Player" e se a colisão foi com a linha de chegada
+        if (collision.CompareTag("Player") && collision.gameObject.CompareTag("Linha") && !raceFinished)
         {
+            Debug.Log("Tá colidindo");
             TrackLap(); // Aumenta o contador de voltas
 
             if (HasFinishedRace())
@@ -38,7 +40,7 @@ public class RaceManager : MonoBehaviourPunCallbacks
         }
     }
 
-    // Implementação do método TrackLap da interface ITrackable
+    // Método para contar as voltas
     public void TrackLap()
     {
         if (playerLap < totalLaps)
@@ -48,7 +50,7 @@ public class RaceManager : MonoBehaviourPunCallbacks
         }
     }
 
-    // Implementação do método HasFinishedRace da interface ITrackable
+    // Verifica se o jogador completou todas as voltas
     public bool HasFinishedRace()
     {
         return playerLap >= totalLaps; // Retorna se o jogador terminou a corrida
@@ -59,6 +61,6 @@ public class RaceManager : MonoBehaviourPunCallbacks
     {
         raceFinished = true; // Define que a corrida foi finalizada
         finishText.text = "Race Finished!"; // Exibe a mensagem de fim de corrida
-        PhotonNetwork.LeaveRoom(); // Sai da sala online
+        PhotonNetwork.LeaveRoom();
     }
 }

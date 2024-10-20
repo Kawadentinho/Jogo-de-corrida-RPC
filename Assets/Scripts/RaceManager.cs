@@ -8,55 +8,48 @@ using UnityEngine.UI;
 public class RaceManager : MonoBehaviourPunCallbacks
 {
 
-    public int totalLaps = 3; // Número total de voltas da corrida
-    public Text lapText; // UI que exibe a volta atual
-    public Text finishText; // UI que exibe a mensagem de fim da corrida
-    public Transform finishLine; // Referência à linha de chegada
+public Transform player; // ReferÃªncia ao carro do jogador
+    public Text lapText; // Texto na UI para mostrar as voltas
+    public Text finishText; // Texto na UI para mostrar quando a corrida termina
+    public int totalLaps = 3; // NÃºmero total de voltas da corrida
+    private int currentLap = 0; // Contador de voltas atual
 
-    private int playerLap = 0; // Contador de voltas do jogador
-    private bool raceFinished = false; // Flag para verificar se a corrida terminou
+    private bool raceFinished = false; // Para checar se a corrida terminou
 
     void Start()
     {
-        // Inicializa a UI
-        lapText.text = "Lap: 0/" + totalLaps;
-        finishText.text = ""; // Limpa o texto de fim da corrida no início
-        
+        // Inicializa os textos da UI
+        lapText.text = "Lap: 0/" + totalLaps; // Mostra que o jogador estÃ¡ na volta 0 inicialmente
+        finishText.text = ""; // Limpa o texto de fim de corrida
     }
 
-    // Método chamado quando o jogador entra no trigger da linha de chegada
+    // MÃ©todo que detecta a colisÃ£o com a linha de chegada
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Verifica se o objeto que colidiu tem a tag "Player" e se a colisão foi com a linha de chegada
-        if (collision.CompareTag("Player") && collision.gameObject.CompareTag("Linha") && !raceFinished)
+        // Verifica se o player colidiu com a linha de chegada
+        if (collision.CompareTag("Linha") && !raceFinished)
         {
-            Debug.Log("Tá colidindo");
-            TrackLap(); // Aumenta o contador de voltas
+            TrackLap();
 
-            if (HasFinishedRace())
+            if (currentLap >= totalLaps)
             {
-                FinishRace(); // Termina a corrida
+                FinishRace(); // Se o jogador completar as voltas, finaliza a corrida
             }
         }
     }
 
-    // Método para contar as voltas
+    // MÃ©todo para contar as voltas
     public void TrackLap()
     {
-        if (playerLap < totalLaps)
+        if (currentLap < totalLaps)
         {
-            playerLap++; // Aumenta a contagem de voltas
-            lapText.text = "Lap: " + playerLap + "/" + totalLaps; // Atualiza o texto de voltas
+            currentLap++; // Aumenta a contagem de voltas
+            lapText.text = "Lap: " + currentLap + "/" + totalLaps; // Atualiza o texto de volta
         }
     }
 
-    // Verifica se o jogador completou todas as voltas
-    public bool HasFinishedRace()
-    {
-        return playerLap >= totalLaps; // Retorna se o jogador terminou a corrida
-    }
 
-    // Método para finalizar a corrida
+    // Mï¿½todo para finalizar a corrida
     private void FinishRace()
     {
         raceFinished = true; // Define que a corrida foi finalizada

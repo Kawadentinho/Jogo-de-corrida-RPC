@@ -1,4 +1,4 @@
-// Importa bibliotecas necessárias
+// Importa bibliotecas necessï¿½rias
 using UnityEngine; // Para usar funcionalidades do Unity
 using Photon.Pun; // Para usar o Photon PUN (Photon Unity Networking)
 using Photon.Realtime; // Para usar funcionalidades em tempo real do Photon
@@ -8,91 +8,95 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 {
     #region Singleton
 
-    // Declara uma instância estática da classe NetworkManager
+    // Declara uma instï¿½ncia estï¿½tica da classe NetworkManager
     public static NetworkManager instance;
 
-    // Método chamado quando o script é inicializado
+    // Mï¿½todo chamado quando o script ï¿½ inicializado
     private void Awake()
     {
-        // Verifica se a instância é nula
+        // Verifica se a instï¿½ncia ï¿½ nula
         if (instance == null)
         {
-            instance = this; // Define a instância para este objeto
-            DontDestroyOnLoad(gameObject); // Não destrói o objeto ao carregar uma nova cena
+            instance = this; // Define a instï¿½ncia para este objeto
+            DontDestroyOnLoad(gameObject); // Nï¿½o destrï¿½i o objeto ao carregar uma nova cena
         }
         else if (instance != this)
         {
-            Destroy(gameObject); // Destroi o objeto se já houver uma instância existente
+            Destroy(gameObject); // Destroi o objeto se jï¿½ houver uma instï¿½ncia existente
         }
     }
 
     #endregion
 
     
-    // Método chamado antes do primeiro frame de atualização
+    // Mï¿½todo chamado antes do primeiro frame de atualizaï¿½ï¿½o
     void Start()
     {
-        PhotonNetwork.ConnectUsingSettings(); // Conecta ao servidor Photon usando configurações definidas
+        PhotonNetwork.ConnectUsingSettings(); // Conecta ao servidor Photon usando configuraï¿½ï¿½es definidas
     }
     
-    // Método chamado quando conectado ao servidor mestre do Photon
+    // Mï¿½todo chamado quando conectado ao servidor mestre do Photon
     public override void OnConnectedToMaster()
     {
         Debug.Log("Connected Successful"); // Loga uma mensagem no console
 
-        MenuManager.instance.Connected(); // Chama o método Connected do menuManager
+        MenuManager.instance.Connected(); // Chama o mï¿½todo Connected do menuManager
     }
     
-    // Método para entrar em uma sala com um nome de sala e apelido
+    // Mï¿½todo para entrar em uma sala com um nome de sala e apelido
     public void JoinRoom(string roomName, string nickname)
     {
         PhotonNetwork.NickName = nickname; // Define o apelido do jogador
         PhotonNetwork.JoinRoom(roomName); // Tenta entrar na sala especificada
     }
     
-    // Método para criar uma sala com um nome de sala e apelido
+    // Mï¿½todo para criar uma sala com um nome de sala e apelido
     public void CreateRoom(string roomName, string nickname)
     {
         PhotonNetwork.NickName = nickname; // Define o apelido do jogador
         PhotonNetwork.CreateRoom(roomName); // Cria uma sala com o nome especificado
     }
 
-    // Método para sair da sala atual
+    // Mï¿½todo para sair da sala atual
     public void LeaveRoom()
     {
         PhotonNetwork.LeaveRoom(); // Sai da sala atual
     }
     
-    // Método chamado quando um jogador entra na sala
+    // Mï¿½todo chamado quando um jogador entra na sala
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         Debug.Log("Player " + newPlayer.NickName + " joined room"); // Loga uma mensagem no console
         MenuManager.instance.UpdatePlayerList(GetPlayerList()); // Atualiza a lista de jogadores no menuManager
     }
 
-    // Método chamado quando um jogador sai da sala
+    // Mï¿½todo chamado quando um jogador sai da sala
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         Debug.Log("Player " + otherPlayer.NickName + " left room"); // Loga uma mensagem no console
         MenuManager.instance.UpdatePlayerList(GetPlayerList()); // Atualiza a lista de jogadores no menuManager
-        MenuManager.instance.SetStartButton(PhotonNetwork.IsMasterClient); // Define o botão de iniciar se o jogador for o mestre da sala
+        MenuManager.instance.SetStartButton(PhotonNetwork.IsMasterClient); // Define o botï¿½o de iniciar se o jogador for o mestre da sala
     }
     
-    // Método chamado quando o jogador entra na sala
+    // Mï¿½todo chamado quando o jogador entra na sala
     public override void OnJoinedRoom()
     {
         Debug.Log("Player " + PhotonNetwork.NickName + " joined room"); // Loga uma mensagem no console
         MenuManager.instance.UpdatePlayerList(GetPlayerList()); // Atualiza a lista de jogadores no menuManager
-        MenuManager.instance.SetStartButton(PhotonNetwork.IsMasterClient); // Define o botão de iniciar se o jogador for o mestre da sala
+        MenuManager.instance.SetStartButton(PhotonNetwork.IsMasterClient); // Define o botï¿½o de iniciar se o jogador for o mestre da sala
+
+        Vector2 spawnPosition = new Vector2( 900, 317); // Define uma posiÃ§Ã£o de spawn aleatÃ³ria
+        PhotonNetwork.Instantiate("Car", spawnPosition, Quaternion.identity, 0); // Instancia o carro
+
     }
     
-    // Método para carregar uma cena
+    // Mï¿½todo para carregar uma cena
     public void LoadScene(string sceneName)
     {
         photonView.RPC("LoadSceneRPC", RpcTarget.All, sceneName); // Chama um RPC para carregar a cena em todos os clientes
     }
 
-    // Método RPC para carregar uma cena
+    // Mï¿½todo RPC para carregar uma cena
     [PunRPC]
     private void LoadSceneRPC(string sceneName)
     {
@@ -104,7 +108,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         return PhotonNetwork.Instantiate(prefabName, position, rotation);
     }
 
-    // Método para obter a lista de jogadores como string
+    // Mï¿½todo para obter a lista de jogadores como string
     public string GetPlayerList()
     {
         string list = ""; // Inicializa uma string vazia
@@ -112,7 +116,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         // Itera sobre a lista de jogadores do Photon
         foreach (var player in PhotonNetwork.PlayerList)
         {
-            list += player + "\n"; // Adiciona o jogador à string
+            list += player + "\n"; // Adiciona o jogador ï¿½ string
         }
 
         return list; // Retorna a lista de jogadores
